@@ -1,8 +1,12 @@
+package model;
+
+import service.TaskStatus;
+
 public class Task {
-    protected int id;
+    public int id;
     protected String title;
     protected String info;
-    protected TaskStatus status;
+    public TaskStatus status;
 
     public Task(int id, String title, String info) {
         this.id = id;
