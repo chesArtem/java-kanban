@@ -1,4 +1,4 @@
-package service;
+package service.Task;
 
 public enum TaskStatus {
     NEW,

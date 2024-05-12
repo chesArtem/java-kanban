@@ -1,6 +1,6 @@
 package model;
 
-import service.TaskStatus;
+import service.Task.TaskStatus;
 
 public class Task {
     public int id;

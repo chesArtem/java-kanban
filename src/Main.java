@@ -1,12 +1,13 @@
 import model.Epic;
 import model.Subtask;
 import model.Task;
-import service.TaskManager;
+import service.Managers;
+import service.Task.TaskManager;
 
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager taskManager = new TaskManager();
+        TaskManager taskManager = Managers.getDefault();
 
         taskManager.createTask(new Task(taskManager.getId(), "title 1", "info 1"));
         taskManager.createTask(new Task(taskManager.getId(), "title 2", "info 2"));
@@ -23,4 +24,5 @@ public class Main {
         taskManager.createSubtasks(new Subtask(taskManager.getId(), "epic 2 subTasks 2", "subTasks", epic2));
         taskManager.createSubtasks(new Subtask(taskManager.getId(), "epic 2 subTasks 3", "subTasks", epic2));
     }
+
 }
