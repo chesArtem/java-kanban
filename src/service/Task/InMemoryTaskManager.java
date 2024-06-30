@@ -59,7 +59,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask getSubtasksToId(Integer id) {
-        if(id != null) {
+        if (id != null) {
             historyManager.add(subTasks.get(id));
         }
         return subTasks.get(id);
