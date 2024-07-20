@@ -1,25 +1,48 @@
 package service.History;
 
+import model.ListNode;
 import model.Task;
-import service.History.HistoryManager;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
+    private final Map<Integer, ListNode<Task>> historyList = new HashMap<>();
 
-    private List<Task> historyList = new LinkedList<>();
+    private ListNode<Task> head;
+
+    private ListNode<Task> tail;
+
     @Override
-    public void add(Task task){
-        historyList.add(task);
-        if (historyList.size() > 10) {
-            historyList.remove(0);
+    public void add(Task task) {
+        ListNode<Task> newNode = new ListNode<>(task);
+        if (tail == null) {
+            head = tail = newNode;
+        } else {
+            tail.addNext(newNode);
+            tail = newNode;
         }
+        if (historyList.containsKey(task.getId())) {
+            remove(task.getId());
+        }
+        historyList.put(task.getId(), newNode);
     }
+
     @Override
-    public List<Task> getHistory(){
-        return new ArrayList<>(historyList);
+    public void remove(int id) {
+        ListNode<Task> oldNode = historyList.get(id);
+        if (oldNode == head) {
+            head = head.getNext();
+        }
+        if (oldNode == tail) {
+            tail = tail.getPrevious();
+        }
+        oldNode.remove();
     }
+
+    @Override
+    public List<Task> getHistory() {
+        return head != null ? head.toList() : Collections.EMPTY_LIST;
+    }
+
 }
