@@ -49,9 +49,9 @@ class InMemoryHistoryManagerTest {
         Epic task1 = inMemoryTaskManager.createEpic("title", "info");
         Subtask subtask1 = inMemoryTaskManager.createSubtask("title", "info", task1);
         Subtask subtask2 = inMemoryTaskManager.createSubtask("title", "info", task1);
-        subtask1 = inMemoryTaskManager.getSubtasksById(subtask1.getId());
-        subtask2 = inMemoryTaskManager.getSubtasksById(subtask2.getId());
-        subtask1 = inMemoryTaskManager.getSubtasksById(subtask1.getId());
+        subtask1 = inMemoryTaskManager.getSubtaskById(subtask1.getId());
+        subtask2 = inMemoryTaskManager.getSubtaskById(subtask2.getId());
+        subtask1 = inMemoryTaskManager.getSubtaskById(subtask1.getId());
         task1 = inMemoryTaskManager.getEpicById(task1.getId());
         var result = inMemoryTaskManager.getHistory();
         assertNotNull(task1);
