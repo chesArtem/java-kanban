@@ -4,8 +4,10 @@ import service.Task.TaskStatus;
 
 import java.util.Objects;
 
-public class Subtask extends Task{
+public class Subtask extends Task {
+
     private final Epic parentEpic;
+
     public Subtask(int id, String title, String info, Epic parentEpic) {
         super(id, title, info);
         this.parentEpic = parentEpic;
