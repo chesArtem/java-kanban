@@ -41,7 +41,7 @@ public class Subtask extends Task{
 
         public Subtask updateTask() {
             Epic parentEpic = ((Subtask)originalTask).getParentEpic();
-            parentEpic.getListSubtask().remove(originalTask);
+            parentEpic.removeSubtask((Subtask) originalTask);
             return new Subtask(originalTask.getId(),
                     newTitle != null ? newTitle : originalTask.getTitle(),
                     newInfo != null ? newInfo : originalTask.getInfo(),

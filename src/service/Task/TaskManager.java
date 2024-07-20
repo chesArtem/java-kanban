@@ -14,7 +14,7 @@ public interface TaskManager {
     Subtask createSubtask(String title, String info, Epic parentEpic);
     Task getTaskById(Integer id);
     Epic getEpicById(Integer id);
-    Subtask getSubtasksById(Integer id);
+    Subtask getSubtaskById(Integer id);
     List<Task> getAllTask();
     List<Epic> getAllEpic();
     List<Subtask> getAllSubtask();

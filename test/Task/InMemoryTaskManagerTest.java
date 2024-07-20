@@ -1,9 +1,11 @@
-package service.Task;
+package Task;
 
 import model.Epic;
 import model.Subtask;
 import model.Task;
 import org.junit.jupiter.api.Test;
+import service.Task.InMemoryTaskManager;
+import service.Task.TaskStatus;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,8 +39,8 @@ class InMemoryTaskManagerTest {
     public void getSubtaskTest() {
         Epic epic = inMemoryTaskManager.createEpic("title", "info");
         Task initial = inMemoryTaskManager.createSubtask("title", "info", epic);
-        Task task1 = inMemoryTaskManager.getSubtasksById(initial.getId());
-        Task task2 = inMemoryTaskManager.getSubtasksById(initial.getId());
+        Task task1 = inMemoryTaskManager.getSubtaskById(initial.getId());
+        Task task2 = inMemoryTaskManager.getSubtaskById(initial.getId());
         assertNotNull(task1);
         assertNotNull(task2);
         assertEquals(task1.getId(), task2.getId());
@@ -92,10 +94,10 @@ class InMemoryTaskManagerTest {
     public void updateSubtaskTest() {
         Epic epic = inMemoryTaskManager.createEpic("title", "info");
         Subtask subtask = inMemoryTaskManager.createSubtask("title", "info", epic);
-        Subtask subtask1 = inMemoryTaskManager.getSubtasksById(subtask.getId());
+        Subtask subtask1 = inMemoryTaskManager.getSubtaskById(subtask.getId());
         subtask1 = (Subtask) subtask1.getUpdater().setNewStatus(TaskStatus.IN_PROGRESS).setNewInfo("NewInfo").setNewTitle("NewTitle").updateTask();
         inMemoryTaskManager.updateSubtask(subtask1);
-        Subtask subtask2 = inMemoryTaskManager.getSubtasksById(subtask1.getId());
+        Subtask subtask2 = inMemoryTaskManager.getSubtaskById(subtask1.getId());
         Epic epic2 = inMemoryTaskManager.getEpicById(epic.getId());
         assertNotNull(subtask2);
         assertNotNull(epic2);

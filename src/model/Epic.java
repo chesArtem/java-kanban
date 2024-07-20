@@ -27,6 +27,14 @@ public class Epic extends Task {
         mapSubtask.put(subtask.getId(), subtask);
     }
 
+    public void removeSubtask(Subtask subtask) {
+        mapSubtask.remove(subtask.getId());
+    }
+
+    public void removeAllSubtasks() {
+        mapSubtask.clear();
+    }
+
     public ArrayList<Subtask> getListSubtask() {
         return new ArrayList<>(mapSubtask.values());
     }

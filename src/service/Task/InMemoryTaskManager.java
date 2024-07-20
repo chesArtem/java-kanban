@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
-    private Map<Integer, Task> tasks = new HashMap<>();
-    private Map<Integer, Epic> epics = new HashMap<>();
-    private Map<Integer, Subtask> subTasks = new HashMap<>();
+    private final Map<Integer, Task> tasks = new HashMap<>();
+    private final Map<Integer, Epic> epics = new HashMap<>();
+    private final Map<Integer, Subtask> subTasks = new HashMap<>();
 
-    private HistoryManager historyManager = Managers.getDefaultHistory();
+    private final HistoryManager historyManager = Managers.getDefaultHistory();
     private int id = 1;
 
 
@@ -41,7 +41,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Subtask createSubtask(String title, String info, Epic parentEpic){
         Subtask result = new Subtask(id, title, info, parentEpic);
         subTasks.put(id++, result);
-        result.getParentEpic().getListSubtask().add(result);
+        result.getParentEpic().addSubtask(result);
         return result;
     }
     @Override
@@ -63,7 +63,7 @@ public class InMemoryTaskManager implements TaskManager {
         return result;
     }
     @Override
-    public Subtask getSubtasksById(Integer id){
+    public Subtask getSubtaskById(Integer id){
         if (id == null){
             throw new IllegalArgumentException("Subtask id can't be null");
         }
@@ -95,6 +95,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteAllSubtask(){
         subTasks.clear();
+        epics.values().forEach(Epic::removeAllSubtasks);
     }
     @Override
     public void deleteTaskById(Integer id){
@@ -109,7 +110,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
     @Override
     public void deleteSubtaskById(Integer id){
-        subTasks.remove(id);
+        Subtask removed = subTasks.remove(id);
+        removed.getParentEpic().removeSubtask(removed);
     }
     @Override
     public void updateTask(Task task){
