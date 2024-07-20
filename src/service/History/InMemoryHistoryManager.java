@@ -6,12 +6,15 @@ import model.Task;
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
+
     private final Map<Integer, ListNode<Task>> historyList = new HashMap<>();
+
     private ListNode<Task> head;
+
     private ListNode<Task> tail;
 
     @Override
-    public void add(Task task){
+    public void add(Task task) {
         ListNode<Task> newNode = new ListNode<>(task);
         if (tail == null) {
             head = tail = newNode;
@@ -24,6 +27,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
         historyList.put(task.getId(), newNode);
     }
+
     @Override
     public void remove(int id) {
         ListNode<Task> oldNode = historyList.get(id);
@@ -35,8 +39,10 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
         oldNode.remove();
     }
+
     @Override
-    public List<Task> getHistory(){
+    public List<Task> getHistory() {
         return head != null ? head.toList() : Collections.EMPTY_LIST;
     }
+
 }
