@@ -73,7 +73,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask getSubtaskById(Integer id) {
-        if (id == null){
+        if (id == null) {
             throw new IllegalArgumentException("Subtask id can't be null");
         }
         Subtask result = subTasks.get(id);
@@ -156,7 +156,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateStatusEpic(ArrayList<Subtask> listSubtaskInEpic, Epic epics) {
-        if ( listSubtaskInEpic.stream().allMatch(item -> item.getStatus().equals(TaskStatus.NEW))) {
+        if (listSubtaskInEpic.stream().allMatch(item -> item.getStatus().equals(TaskStatus.NEW))) {
             updateEpic((Epic) epics.getUpdater().setNewStatus(TaskStatus.NEW).updateTask());
         } else if (listSubtaskInEpic.stream().allMatch(item -> item.getStatus().equals(TaskStatus.DONE))) {
             updateEpic((Epic) epics.getUpdater().setNewStatus(TaskStatus.DONE).updateTask());
