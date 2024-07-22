@@ -32,7 +32,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     public void remove(int id) {
         ListNode<Task> oldNode = historyList.get(id);
         if (oldNode == null) {
-            System.out.println("there is no ID-" + id +" element in the history");
+            System.out.println("there is no ID-" + id + " element in the history");
         }
         if (oldNode == head) {
             head = head.getNext();
