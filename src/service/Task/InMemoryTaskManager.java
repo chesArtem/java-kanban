@@ -115,6 +115,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTaskById(Integer id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Task id can't be null");
+        }
+        if (tasks.remove(id) == null) {
+            System.out.println("Deleting nonexisting task with id " + id);
+        }
         tasks.remove(id);
     }
 
