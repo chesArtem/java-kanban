@@ -4,10 +4,11 @@ import model.Epic;
 import model.Subtask;
 import model.Task;
 import org.junit.jupiter.api.Test;
+import service.History.HistoryManager;
+import service.History.InMemoryHistoryManager;
 import service.Task.InMemoryTaskManager;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
 
@@ -62,5 +63,29 @@ class InMemoryHistoryManagerTest {
         assertEquals(result.get(0), subtask2);
         assertEquals(result.get(1), subtask1);
         assertEquals(result.get(2), task1);
+    }
+
+    @Test
+    public void getHistoryTest() {
+        Epic task1 = inMemoryTaskManager.createEpic("title", "info");
+        var history = inMemoryTaskManager.getHistory();
+        assertEquals(0, history.size());
+        task1 = inMemoryTaskManager.getEpicById(task1.getId());
+        history = inMemoryTaskManager.getHistory();
+        assertEquals(1, history.size());
+        assertEquals(history.get(0), task1);
+        inMemoryTaskManager.deleteEpicById(task1.getId());
+        history = inMemoryTaskManager.getHistory();
+        assertEquals(1, history.size());
+    }
+
+    @Test
+    public void deleteTaskNullTest() {
+        assertThrows(IllegalArgumentException.class, () -> inMemoryTaskManager.deleteTaskById(null));
+    }
+
+    @Test
+    public void deeleteTaskTest() {
+        inMemoryTaskManager.deleteTaskById(0);
     }
 }
