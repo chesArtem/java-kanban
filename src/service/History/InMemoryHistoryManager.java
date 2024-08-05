@@ -15,6 +15,9 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
+        if (historyList.containsKey(task.getId())) {
+            remove(task.getId());
+        }
         ListNode<Task> newNode = new ListNode<>(task);
         if (tail == null) {
             head = tail = newNode;
@@ -22,15 +25,15 @@ public class InMemoryHistoryManager implements HistoryManager {
             tail.addNext(newNode);
             tail = newNode;
         }
-        if (historyList.containsKey(task.getId())) {
-            remove(task.getId());
-        }
         historyList.put(task.getId(), newNode);
     }
 
     @Override
     public void remove(int id) {
         ListNode<Task> oldNode = historyList.get(id);
+        if (oldNode == null) {
+            System.out.println("there is no ID-" + id + " element in the history");
+        }
         if (oldNode == head) {
             head = head.getNext();
         }
