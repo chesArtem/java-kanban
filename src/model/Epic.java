@@ -51,7 +51,7 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return getId() + ", EPIC, " + ", " + getTitle() + ", " + getStatus() + ", " + getInfo();
+        return getId() + ",EPIC, " + " " + getTitle() + "," + getStatus() + "," + getInfo() + ",";
     }
 
     public static class EpicUpdater extends TaskUpdater {

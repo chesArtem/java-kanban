@@ -54,7 +54,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return getId() + ", TASK, " + ", " + title + ", " + status + ", " + info;
+        return getId() + ",TASK, " + "," + title + "," + status + "," + info + ",";
     }
 
     public static class TaskUpdater {
