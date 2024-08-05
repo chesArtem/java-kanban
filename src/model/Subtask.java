@@ -36,6 +36,12 @@ public class Subtask extends Task {
         return Objects.equals(parentEpic, subtask.parentEpic);
     }
 
+    @Override
+    public String toString() {
+        return getId() + ", SUBTASK, " + ", " + getTitle() + ", " + getStatus() + ", " + getInfo() + ", " +
+                parentEpic.getId();
+    }
+
     public static class SubtaskUpdater extends TaskUpdater {
         public SubtaskUpdater(Subtask originalTask) {
             super(originalTask);

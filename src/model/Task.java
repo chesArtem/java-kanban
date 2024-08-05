@@ -52,6 +52,11 @@ public class Task {
         return id == task.id && Objects.equals(title, task.title) && Objects.equals(info, task.info) && status == task.status;
     }
 
+    @Override
+    public String toString() {
+        return getId() + ", TASK, " + ", " + title + ", " + status + ", " + info;
+    }
+
     public static class TaskUpdater {
         protected final Task originalTask;
         protected String newTitle;
