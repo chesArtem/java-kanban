@@ -5,7 +5,6 @@ import model.Subtask;
 import model.Task;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +17,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         readFile();
     }
 
-    public void save() throws IOException{
+    public void save() throws IOException {
         try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter("task.txt"))) {
             fileWriter.write("id,type,name,status,description,epic \n");
             for (Task task : getAllTask()) {
@@ -44,7 +43,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 System.out.println(line);
                 String[] el = line.split(",");
 
-                switch (el[1]){
+                switch (el[1]) {
                     case "TASK":
                         Task task = new Task(Integer.parseInt(el[0]), el[2], el[3]);
 
