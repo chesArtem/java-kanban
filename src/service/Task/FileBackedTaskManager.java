@@ -15,7 +15,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public FileBackedTaskManager(String path) {
         super();
-        if ( path == null || path.isEmpty() ){
+        if (path == null || path.isEmpty()) {
             System.out.println("empty path");
             throw new IllegalArgumentException("empty path");
         }
