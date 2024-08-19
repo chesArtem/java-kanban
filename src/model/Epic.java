@@ -49,11 +49,6 @@ public class Epic extends Task {
         return super.equals(o);
     }
 
-    @Override
-    public String toString() {
-        return getId() + ",EPIC, " + " " + getTitle() + "," + getStatus() + "," + getInfo() + ",";
-    }
-
     public static class EpicUpdater extends TaskUpdater {
         public EpicUpdater(Epic originalTask) {
             super(originalTask);

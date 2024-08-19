@@ -3,6 +3,7 @@ package service.Task;
 import model.Epic;
 import model.Subtask;
 import model.Task;
+import util.CSVUtil;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -12,22 +13,35 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private File file;
 
-    public FileBackedTaskManager() {
+    public FileBackedTaskManager(String path) {
         super();
-        readFile();
+        if ( path == null || path.isEmpty() ){
+            System.out.println("empty path");
+            throw new IllegalArgumentException("empty path");
+        }
+
+        file = new File(path);
+        try {
+            if (!file.createNewFile()) {
+                readFile();
+            }
+        } catch (IOException e) {
+            System.out.println("error creating file");
+            throw new IllegalArgumentException("error creating file", e);
+        }
     }
 
     public void save() throws IOException {
-        try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter("task.txt"))) {
+        try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file.getCanonicalPath()))) {
             fileWriter.write("id,type,name,status,description,epic \n");
             for (Task task : getAllTask()) {
-                fileWriter.write(task.toString() + "\n");
+                fileWriter.write(CSVUtil.taskToCsvString(task) + "\n");
             }
-            for (Task epic : getAllEpic()) {
-                fileWriter.write(epic.toString() + "\n");
+            for (Epic epic : getAllEpic()) {
+                fileWriter.write(CSVUtil.epicToCsvString(epic) + "\n");
             }
-            for (Task subTask : getAllSubtask()) {
-                fileWriter.write(subTask.toString() + "\n");
+            for (Subtask subTask : getAllSubtask()) {
+                fileWriter.write(CSVUtil.subtaskToCsvString(subTask) + "\n");
             }
         }
     }
@@ -36,43 +50,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         BufferedReader reader;
 
         try {
-            reader = new BufferedReader(new FileReader("task.txt"));
+            reader = new BufferedReader(new FileReader(file.getCanonicalPath()));
             reader.readLine();
             String line = reader.readLine();
             while (line != null) {
                 System.out.println(line);
-                String[] el = line.split(",");
 
-                switch (el[1]) {
-                    case "TASK":
-                        Task task = new Task(Integer.parseInt(el[0]), el[2], el[3]);
-
-                        tasks.put(Integer.parseInt(el[0]), task);
-                        break;
-                    case "EPIC":
-                        Epic epic = new Epic(Integer.parseInt(el[0]), el[2], el[3]);
-
-                        epics.put(Integer.parseInt(el[0]), epic);
-                        break;
-                    case "SUBTASK":
-                        Epic epicInList = epics.get(Integer.parseInt(el[4]));
-                        Subtask subtask = new Subtask(
-                                Integer.parseInt(el[0]),
-                                el[2],
-                                el[3],
-                                epicInList);
-
-                        epicInList.addSubtask(subtask);
-                        subTasks.put(Integer.parseInt(el[0]), subtask);
-                        break;
-                }
+                CSVUtil.csvStringToTask(line, tasks, epics, subTasks);
 
                 line = reader.readLine();
             }
 
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error while reading from file");
         }
     }
 
@@ -116,7 +107,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public Subtask getSubtaskById(Integer id) {
-        Subtask result = getSubtaskById(id);
+        Subtask result = super.getSubtaskById(id);
         return result;
     }
 
