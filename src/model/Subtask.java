@@ -36,6 +36,7 @@ public class Subtask extends Task {
         return Objects.equals(parentEpic, subtask.parentEpic);
     }
 
+
     public static class SubtaskUpdater extends TaskUpdater {
         public SubtaskUpdater(Subtask originalTask) {
             super(originalTask);

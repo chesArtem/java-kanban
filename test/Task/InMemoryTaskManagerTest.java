@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import service.Task.InMemoryTaskManager;
 import service.Task.TaskStatus;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
@@ -14,7 +16,7 @@ class InMemoryTaskManagerTest {
     private InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
 
     @Test
-    public void getTaskTest() {
+    public void getTaskTest() throws IOException {
         Task initial = inMemoryTaskManager.createTask("title", "info");
         Task task1 = inMemoryTaskManager.getTaskById(initial.getId());
         Task task2 = inMemoryTaskManager.getTaskById(initial.getId());
@@ -25,7 +27,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void getEpicTest() {
+    public void getEpicTest() throws IOException {
         Task initial = inMemoryTaskManager.createEpic("title", "info");
         Task task1 = inMemoryTaskManager.getEpicById(initial.getId());
         Task task2 = inMemoryTaskManager.getEpicById(initial.getId());
@@ -36,7 +38,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void getSubtaskTest() {
+    public void getSubtaskTest() throws IOException {
         Epic epic = inMemoryTaskManager.createEpic("title", "info");
         Task initial = inMemoryTaskManager.createSubtask("title", "info", epic);
         Task task1 = inMemoryTaskManager.getSubtaskById(initial.getId());
@@ -48,7 +50,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void immutableTaskTest() {
+    public void immutableTaskTest() throws IOException {
         Task initial = inMemoryTaskManager.createTask("title", "info");
         Task task1 = inMemoryTaskManager.getTaskById(initial.getId());
         task1.getUpdater().setNewStatus(TaskStatus.IN_PROGRESS).setNewInfo("NewInfo").updateTask();
@@ -59,7 +61,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void updateTaskTest() {
+    public void updateTaskTest() throws IOException {
         Task initial = inMemoryTaskManager.createTask("title", "info");
         Task task1 = inMemoryTaskManager.getTaskById(initial.getId());
         task1 = task1.getUpdater().setNewStatus(TaskStatus.IN_PROGRESS).setNewInfo("NewInfo").setNewTitle("NewTitle").updateTask();
@@ -75,7 +77,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void updateEpicTest() {
+    public void updateEpicTest() throws IOException {
         Epic epic = inMemoryTaskManager.createEpic("title", "info");
         Epic epic1 = inMemoryTaskManager.getEpicById(epic.getId());
         epic1 = (Epic) epic1.getUpdater().setNewStatus(TaskStatus.IN_PROGRESS).setNewInfo("NewInfo").setNewTitle("NewTitle").updateTask();
@@ -91,7 +93,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void updateSubtaskTest() {
+    public void updateSubtaskTest() throws IOException {
         Epic epic = inMemoryTaskManager.createEpic("title", "info");
         Subtask subtask = inMemoryTaskManager.createSubtask("title", "info", epic);
         Subtask subtask1 = inMemoryTaskManager.getSubtaskById(subtask.getId());

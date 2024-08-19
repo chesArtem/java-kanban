@@ -1,0 +1,41 @@
+package Task;
+
+import model.Epic;
+import model.Subtask;
+import model.Task;
+import org.junit.jupiter.api.Test;
+import service.Task.FileBackedTaskManager;
+
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class FileBackedTaskManagerTest  {
+
+    private FileBackedTaskManager fileBackedTaskManager;
+
+    @Test
+    public void saveTest() throws IOException {
+        fileBackedTaskManager = new FileBackedTaskManager("testSave.txt");
+        Task task = fileBackedTaskManager.createTask("task1", "info1");
+        Epic epic = fileBackedTaskManager.createEpic("epic1", "info2");
+        Subtask subtask = fileBackedTaskManager.createSubtask("subtask1 epic1", "info3", epic);
+        assertNotNull(task);
+        assertNotNull(epic);
+        assertNotNull(subtask);
+    }
+
+    @Test
+    public void readFileTast() throws IOException {
+        fileBackedTaskManager = new FileBackedTaskManager("testSave.txt");
+        Task task = fileBackedTaskManager.getTaskById(1);
+        Epic epic = fileBackedTaskManager.getEpicById(2);
+        Subtask subtask = fileBackedTaskManager.getSubtaskById(3);
+        assertNotNull(task);
+        assertNotNull(epic);
+        assertNotNull(subtask);
+        assertEquals(epic.getId(), subtask.getParentEpic().getId());
+        assertEquals(1, epic.getListSubtask().size());
+        assertEquals(subtask.getId(), epic.getListSubtask().get(0).getId());
+    }
+}
