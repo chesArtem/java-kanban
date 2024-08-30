@@ -6,6 +6,8 @@ import model.Task;
 import util.CSVUtil;
 
 import java.io.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +35,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public void save() throws IOException {
         try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(file.getCanonicalPath()))) {
-            fileWriter.write("id,type,name,status,description,epic \n");
+            fileWriter.write("id,type,name,status,description,duration,startTime,epic \n");
             for (Task task : getAllTask()) {
                 fileWriter.write(CSVUtil.taskToCsvString(task) + "\n");
             }
@@ -74,7 +76,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public Task createTask(String title, String info) throws IOException {
-        Task result = super.createTask(title, info);
+        return createTask(title, info, null, null);
+    }
+
+    @Override
+    public Task createTask(String title, String info, Duration duration, LocalDateTime startTime) throws IOException {
+        Task result = super.createTask(title, info, duration, startTime);
         save();
         return result;
     }
@@ -88,7 +95,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public Subtask createSubtask(String title, String info, Epic parentEpic) throws IOException {
-        Subtask result = super.createSubtask(title, info, parentEpic);
+        return createSubtask(title, info, null, null, parentEpic);
+    }
+
+    @Override
+    public Subtask createSubtask(String title, String info, Duration duration, LocalDateTime startTime, Epic parentEpic) throws IOException {
+        Subtask result = super.createSubtask(title, info, duration, startTime, parentEpic);
         save();
         return result;
     }

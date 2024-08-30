@@ -5,6 +5,8 @@ import model.Subtask;
 import model.Task;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,9 +16,13 @@ public interface TaskManager {
 
     Task createTask(String title, String info) throws IOException;
 
+    Task createTask(String title, String info, Duration duration, LocalDateTime startTime) throws IOException;
+
     Epic createEpic(String title, String info) throws IOException;
 
     Subtask createSubtask(String title, String info, Epic parentEpic) throws IOException;
+
+    Subtask createSubtask(String title, String info, Duration duration, LocalDateTime startTime, Epic parentEpic) throws IOException;
 
     Task getTaskById(Integer id);
 

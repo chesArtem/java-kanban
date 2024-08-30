@@ -7,10 +7,9 @@ import service.History.HistoryManager;
 import service.Managers;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
     protected final Map<Integer, Task> tasks = new HashMap<>();
@@ -18,7 +17,6 @@ public class InMemoryTaskManager implements TaskManager {
     protected final Map<Integer, Epic> epics = new HashMap<>();
 
     protected final Map<Integer, Subtask> subTasks = new HashMap<>();
-
 
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
@@ -32,7 +30,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task createTask(String title, String info) throws IOException {
-        Task result = new Task(id, title, info);
+        return createTask(title, info, null, null);
+    }
+
+    @Override
+    public Task createTask(String title, String info, Duration duration, LocalDateTime startTime) throws IOException {
+        Task result = new Task(id, title, info, duration, startTime);
         tasks.put(id++, result);
         return result;
     }
@@ -46,7 +49,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask createSubtask(String title, String info, Epic parentEpic) throws IOException {
-        Subtask result = new Subtask(id, title, info, parentEpic);
+        return createSubtask(title, info, null, null, parentEpic );
+    }
+
+    @Override
+    public Subtask createSubtask(String title, String info, Duration duration, LocalDateTime localDateTime, Epic parentEpic) throws IOException {
+        Subtask result = new Subtask(id, title, info, duration, localDateTime, parentEpic);
         subTasks.put(id++, result);
         result.getParentEpic().addSubtask(result);
         return result;
@@ -182,4 +190,9 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
+//    public Set<Task> getPrioritizedTasks() {
+//        Set<Task> newTasks = new TreeSet<>();
+//        newTasks.add(tasks.values().stream().map(Task::getStartTime).filter(LocalDateTime::isBefore));
+//        return newTasks;
+//    }
 }

@@ -2,6 +2,8 @@ package model;
 
 import service.Task.TaskStatus;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Subtask extends Task {
@@ -18,6 +20,16 @@ public class Subtask extends Task {
         this.parentEpic = parentEpic;
     }
 
+    public Subtask(int id, String title, String info, Duration duration, LocalDateTime startTime, Epic parentEpic) {
+        super(id, title, info, duration, startTime);
+        this.parentEpic = parentEpic;
+    }
+
+    public Subtask(int id, String title, String info, TaskStatus status, Duration duration, LocalDateTime startTime, Epic parentEpic) {
+        super(id, title, info, status, duration, startTime);
+        this.parentEpic = parentEpic;
+    }
+
     public Epic getParentEpic() {
         return parentEpic;
     }
@@ -25,7 +37,6 @@ public class Subtask extends Task {
     public SubtaskUpdater getUpdater() {
         return new SubtaskUpdater(this);
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -35,7 +46,6 @@ public class Subtask extends Task {
         Subtask subtask = (Subtask) o;
         return Objects.equals(parentEpic, subtask.parentEpic);
     }
-
 
     public static class SubtaskUpdater extends TaskUpdater {
         public SubtaskUpdater(Subtask originalTask) {
@@ -49,6 +59,8 @@ public class Subtask extends Task {
                     newTitle != null ? newTitle : originalTask.getTitle(),
                     newInfo != null ? newInfo : originalTask.getInfo(),
                     newStatus != null ? newStatus : originalTask.getStatus(),
+                    duration != null ? duration : originalTask.getDuration(),
+                    startTime != null ? startTime : originalTask.getStartTime(),
                     parentEpic);
         }
     }
