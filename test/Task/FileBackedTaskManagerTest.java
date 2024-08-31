@@ -33,7 +33,7 @@ public class FileBackedTaskManagerTest  {
     }
 
     @Test
-    public void readFileTast() throws IOException {
+    public void readFileTest() throws IOException {
         fileBackedTaskManager = new FileBackedTaskManager("testSaveTime.txt");
         Task task = fileBackedTaskManager.getTaskById(1);
         Epic epic = fileBackedTaskManager.getEpicById(3);
