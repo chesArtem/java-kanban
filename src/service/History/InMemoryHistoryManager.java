@@ -1,24 +1,27 @@
 package service.History;
 
+import model.Entity;
 import model.ListNode;
-import model.Task;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private final Map<Integer, ListNode<Task>> historyList = new HashMap<>();
+    private final Map<Integer, ListNode<Entity>> historyList = new HashMap<>();
 
-    private ListNode<Task> head;
+    private ListNode<Entity> head;
 
-    private ListNode<Task> tail;
+    private ListNode<Entity> tail;
 
     @Override
-    public void add(Task task) {
+    public void add(Entity task) {
         if (historyList.containsKey(task.getId())) {
             remove(task.getId());
         }
-        ListNode<Task> newNode = new ListNode<>(task);
+        ListNode<Entity> newNode = new ListNode<>(task);
         if (tail == null) {
             head = tail = newNode;
         } else {
@@ -30,7 +33,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(int id) {
-        ListNode<Task> oldNode = historyList.get(id);
+        ListNode<Entity> oldNode = historyList.get(id);
         if (oldNode == null) {
             System.out.println("there is no ID-" + id + " element in the history");
         }
@@ -40,11 +43,13 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (oldNode == tail) {
             tail = tail.getPrevious();
         }
-        oldNode.remove();
+        if (oldNode != null) {
+            oldNode.remove();
+        }
     }
 
     @Override
-    public List<Task> getHistory() {
+    public List<Entity> getHistory() {
         return head != null ? head.toList() : Collections.EMPTY_LIST;
     }
 

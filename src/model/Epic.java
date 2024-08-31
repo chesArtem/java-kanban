@@ -6,61 +6,83 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class Epic extends Task {
-    private Map<Integer, Subtask> mapSubtask = new HashMap<>();
+public class Epic extends Entity {
+    private final Map<Integer, Subtask> mapSubtask;
+    private TaskStatus status;
+    private Duration duration;
+    private LocalDateTime startTime;
     private LocalDateTime endTime;
 
-    public Epic(int id, String title, String info) {
+    private Epic(int id, String title, String info, Map<Integer, Subtask> mapSubtask) {
         super(id, title, info);
-    }
-
-    public Epic(int id, String title, String info, TaskStatus taskStatus, Map<Integer, Subtask> subtasks) {
-        super(id, title, info, taskStatus);
-        mapSubtask = subtasks;
-    }
-
-    public Epic(int id, String title, String info, TaskStatus status, Duration duration,
-                LocalDateTime startTime, Map<Integer, Subtask> mapSubtask) {
-        super(id, title, info, status, duration, startTime);
         this.mapSubtask = mapSubtask;
-        this.startTime = mapSubtask.values().stream()
-                .map(Task::getStartTime).filter(Objects::nonNull).min(LocalDateTime::compareTo).orElse(null);
-        this.duration = mapSubtask.values().stream()
-                .map(Task::getDuration).filter(Objects::nonNull).reduce(Duration.ZERO, Duration::plus);
-        this.endTime = mapSubtask.values().stream()
-                .map(Task::getEndTime).filter(Objects::nonNull).max(LocalDateTime::compareTo).orElse(null);
+        recalculateFields();
     }
 
-    private Map<Integer, Subtask> getMapSubtask() {
-        return mapSubtask;
+    @Override
+    public TaskStatus getStatus() {
+        return status;
+    }
+
+    @Override
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    @Override
+    public Duration getDuration() {
+        return duration;
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
     }
 
     public void addSubtask(Subtask subtask) {
         mapSubtask.put(subtask.getId(), subtask);
-
-        startTime = mapSubtask.values().stream().map(Task::getStartTime).filter(Objects::nonNull).min(LocalDateTime::compareTo).orElse(null);
-        duration = mapSubtask.values().stream().map(Task::getDuration).filter(Objects::nonNull).reduce(Duration.ZERO, Duration::plus);
-        endTime = mapSubtask.values().stream().map(Task::getEndTime).filter(Objects::nonNull).max(LocalDateTime::compareTo).orElse(null);
+        recalculateFields();
     }
 
     public void removeSubtask(Subtask subtask) {
         mapSubtask.remove(subtask.getId());
+        recalculateFields();
     }
 
     public void removeAllSubtasks() {
         mapSubtask.clear();
+        recalculateFields();
     }
 
     public ArrayList<Subtask> getListSubtask() {
         return new ArrayList<>(mapSubtask.values());
     }
 
-    public EpicUpdater getUpdater() {
-        return new EpicUpdater(this);
+    public Map<Integer, Subtask> getMapSubtask() {
+        return mapSubtask;
     }
 
-    public LocalDateTime getEndTime(){
-        return endTime;
+    public void recalculateFields() {
+        if (mapSubtask.values().stream().allMatch(item -> item.getStatus().equals(TaskStatus.NEW))) {
+            status = TaskStatus.NEW;
+        } else if (mapSubtask.values().stream().allMatch(item -> item.getStatus().equals(TaskStatus.DONE))) {
+            status = TaskStatus.DONE;
+        } else {
+            status = TaskStatus.IN_PROGRESS;
+        }
+
+        startTime = mapSubtask.values().stream()
+                .map(Task::getStartTime)
+                .filter(Objects::nonNull)
+                .min(LocalDateTime::compareTo).orElse(null);
+        duration = mapSubtask.values().stream()
+                .map(Task::getDuration)
+                .filter(Objects::nonNull)
+                .reduce(Duration.ZERO, Duration::plus);
+        endTime = mapSubtask.values().stream()
+                .map(Task::getEndTime)
+                .filter(Objects::nonNull)
+                .max(LocalDateTime::compareTo).orElse(null);
     }
 
     @Override
@@ -70,17 +92,38 @@ public class Epic extends Task {
         return super.equals(o);
     }
 
-    public static class EpicUpdater extends TaskUpdater {
-        public EpicUpdater(Epic originalTask) {
-            super(originalTask);
+    public static EpicBuilder builder() {
+        return new EpicBuilder();
+    }
+
+    public static class EpicBuilder {
+        private int id;
+        private String title;
+        private String info;
+        private Map<Integer, Subtask> mapSubtask = new HashMap<>();
+
+        public EpicBuilder id(int id) {
+            this.id = id;
+            return this;
         }
 
-        public Epic updateTask() {
-            return new Epic(originalTask.getId(),
-                    newTitle != null ? newTitle : originalTask.getTitle(),
-                    newInfo != null ? newInfo : originalTask.getInfo(),
-                    newStatus != null ? newStatus : originalTask.getStatus(),
-                    ((Epic)originalTask).getMapSubtask());
+        public EpicBuilder title(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public EpicBuilder info(String info) {
+            this.info = info;
+            return this;
+        }
+
+        public EpicBuilder mapSubtask(Map<Integer, Subtask> mapSubtask) {
+            this.mapSubtask = mapSubtask;
+            return this;
+        }
+
+        public Epic build() {
+            return new Epic(id, title, info, mapSubtask);
         }
     }
 }

@@ -3,6 +3,9 @@ package util;
 import model.Epic;
 import model.Subtask;
 import model.Task;
+import service.Task.InMemoryTaskManager;
+import service.Task.TaskManager;
+import service.Task.TaskStatus;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -11,50 +14,61 @@ import java.util.Map;
 public class CSVUtil {
 
     public static String taskToCsvString(Task task) {
-        return task.getId() + ",TASK" + "," + task.getTitle() + "," + task.getStatus() + "," + task.getInfo() + "," +
-                (task.getDuration() != null ? task.getDuration() : "-") + "," +
-                (task.getStartTime() != null ? task.getStartTime() : "-");
+        return String.format("%s,TASK,%s,%s,%s,%s,%s", task.getId(), task.getTitle(), task.getStatus(), task.getInfo(),
+                task.getDuration(), task.getStartTime());
     }
 
     public static String epicToCsvString(Epic epic) {
-        return epic.getId() + ",EPIC" + "," + epic.getTitle() + "," + epic.getStatus() + "," + epic.getInfo() + "," +
-                (epic.getDuration() != null ? epic.getDuration() : "-")  + "," +
-                (epic.getStartTime() != null ? epic.getStartTime() : "-");
+        return String.format("%s,EPIC,%s,%s,%s,%s,%s", epic.getId(), epic.getTitle(), null, epic.getInfo(), null, null);
     }
 
     public static String subtaskToCsvString(Subtask subtask) {
-        return subtask.getId() + ",SUBTASK," + subtask.getTitle() + "," +
-                subtask.getStatus() + "," + subtask.getInfo() + "," +
-                (subtask.getDuration() != null ? subtask.getDuration() : "-")  + "," +
-                (subtask.getStartTime() != null ? subtask.getStartTime() : "-")  + "," +
-                subtask.getParentEpic().getId();
+        return String.format("%s,SUBTASK,%s,%s,%s,%s,%s,%s", subtask.getId(), subtask.getTitle(), subtask.getStatus(),
+                subtask.getInfo(), subtask.getDuration(), subtask.getStartTime(), subtask.getParentEpic().getId());
     }
 
-    public static void csvStringToTask(String line, Map<Integer, Task> tasks, Map<Integer, Epic> epics, Map<Integer, Subtask> subTasks) {
+    public static void csvStringToTask(String line, TaskManager manager) {
         String[] el = line.split(",");
+        Duration duration;
+        LocalDateTime startTime;
         switch (el[1]) {
             case "TASK":
-                Task task = new Task(Integer.parseInt(el[0]), el[2], el[3]);
-
-                tasks.put(Integer.parseInt(el[0]), task);
+                duration = el[5].equals("null") ? null : Duration.parse(el[5]);
+                startTime = el[6].equals("null") ? null : LocalDateTime.parse(el[6]);
+                Task task = Task.builder()
+                        .id(Integer.parseInt(el[0]))
+                        .title(el[2])
+                        .info(el[4])
+                        .status(TaskStatus.valueOf(el[3]))
+                        .duration(duration)
+                        .startTime(startTime)
+                        .build();
+                manager.addTask(task);
                 break;
             case "EPIC":
-                Epic epic = new Epic(Integer.parseInt(el[0]), el[2], el[3]);
-
-                epics.put(Integer.parseInt(el[0]), epic);
+                Epic epic = (Epic) Epic.builder()
+                        .id(Integer.parseInt(el[0]))
+                        .title(el[2])
+                        .info(el[4])
+                        .build();
+                manager.addEpic(epic);
                 break;
             case "SUBTASK":
-                Epic epicInList = epics.get(Integer.parseInt(el[7]));
-                Subtask subtask = new Subtask(
-                        Integer.parseInt(el[0]),
-                        el[2],
-                        el[3],
-//                        el[5] != "-" ? Duration.parse(el[5]) : null,
-//                        el[6] != "-" ? LocalDateTime.parse(el[6]) : null,
-                        epicInList);
+                Epic epicInList = manager.getEpicById(Integer.parseInt(el[7]));
+                duration = el[5].equals("null") ? null : Duration.parse(el[5]);
+                startTime = el[6].equals("null") ? null : LocalDateTime.parse(el[6]);
+                Subtask subtask = (Subtask) Subtask.builder()
+                        .parentEpic(epicInList)
+                        .id(Integer.parseInt(el[0]))
+                        .title(el[2])
+                        .info(el[4])
+                        .status(TaskStatus.valueOf(el[3]))
+                        .duration(duration)
+                        .startTime(startTime)
+                        .build();
 
                 epicInList.addSubtask(subtask);
-                subTasks.put(Integer.parseInt(el[0]), subtask);
+                manager.addSubtask(subtask);
                 break;
         }
     }

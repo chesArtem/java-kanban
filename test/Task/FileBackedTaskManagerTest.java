@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,13 +36,15 @@ public class FileBackedTaskManagerTest  {
     public void readFileTast() throws IOException {
         fileBackedTaskManager = new FileBackedTaskManager("testSaveTime.txt");
         Task task = fileBackedTaskManager.getTaskById(1);
-        Epic epic = fileBackedTaskManager.getEpicById(2);
-        Subtask subtask = fileBackedTaskManager.getSubtaskById(3);
+        Epic epic = fileBackedTaskManager.getEpicById(3);
+        Subtask subtask = fileBackedTaskManager.getSubtaskById(4);
+        subtask = fileBackedTaskManager.updateSubtask(subtask.getId(), null, null,
+                null, null, LocalDateTime.now());
         assertNotNull(task);
         assertNotNull(epic);
         assertNotNull(subtask);
         assertEquals(epic.getId(), subtask.getParentEpic().getId());
-        assertEquals(1, epic.getListSubtask().size());
-        assertEquals(subtask.getId(), epic.getListSubtask().get(0).getId());
+        assertEquals(2, epic.getListSubtask().size());
+        assertTrue(epic.getListSubtask().stream().map(Subtask::getId).collect(Collectors.toList()).contains(subtask.getId()));
     }
 }
