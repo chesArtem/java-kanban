@@ -6,8 +6,9 @@ import model.Task;
 import org.junit.jupiter.api.Test;
 import service.Task.FileBackedTaskManager;
 
-import java.io.IOException;
-import java.nio.file.StandardOpenOption;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -19,10 +20,12 @@ public class FileBackedTaskManagerTest  {
 
     private FileBackedTaskManager fileBackedTaskManager;
 
+
+
     @Test
     public void saveTest() throws IOException {
+        Files.delete(Path.of("testSaveTime.txt"));
         fileBackedTaskManager = new FileBackedTaskManager("testSaveTime.txt");
-        Files.newBufferedWriter(fileBackedTaskManager , StandardOpenOption.TRUNCATE_EXISTING);
         Task task = fileBackedTaskManager.createTask("task", "info", null, null);
         Task task1 = fileBackedTaskManager.createTask("task1", "info1", Duration.ofMinutes(120),
                 LocalDateTime.now(ZoneId.of("UTC")));
