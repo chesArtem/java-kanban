@@ -44,7 +44,7 @@ public class FileBackedTaskManagerTest  {
         Epic epic = fileBackedTaskManager.getEpicById(3);
         Subtask subtask = fileBackedTaskManager.getSubtaskById(4);
         subtask = fileBackedTaskManager.updateSubtask(subtask.getId(), null, null,
-                null, null, LocalDateTime.now());
+                null, null, LocalDateTime.now().minusDays(6));
         assertNotNull(task);
         assertNotNull(epic);
         assertNotNull(subtask);
