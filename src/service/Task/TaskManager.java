@@ -1,21 +1,28 @@
 package service.Task;
 
+import model.Entity;
 import model.Epic;
 import model.Subtask;
 import model.Task;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.TreeSet;
 
 public interface TaskManager {
-
     int getId();
 
-    Task createTask(String title, String info);
+    Task createTask(String title, String info) throws IOException;
 
-    Epic createEpic(String title, String info);
+    Task createTask(String title, String info, Duration duration, LocalDateTime startTime) throws IOException;
 
-    Subtask createSubtask(String title, String info, Epic parentEpic);
+    Epic createEpic(String title, String info) throws IOException;
+
+    Subtask createSubtask(String title, String info, Epic parentEpic) throws IOException;
+
+    Subtask createSubtask(String title, String info, Duration duration, LocalDateTime startTime, Epic parentEpic) throws IOException;
 
     Task getTaskById(Integer id);
 
@@ -29,28 +36,35 @@ public interface TaskManager {
 
     List<Subtask> getAllSubtask();
 
-    void deleteAllTask();
+    void deleteAllTask() throws IOException;
 
-    void deleteAllEpic();
+    void deleteAllEpic() throws IOException;
 
-    void deleteAllSubtask();
+    void deleteAllSubtask() throws IOException;
 
-    void deleteTaskById(Integer id);
+    void deleteTaskById(Integer id) throws IOException;
 
-    void deleteEpicById(Integer id);
+    void deleteEpicById(Integer id) throws IOException;
 
-    void deleteSubtaskById(Integer id);
+    void deleteSubtaskById(Integer id) throws IOException;
 
-    void updateTask(Task task);
+    Task updateTask(int taskId, String newTitle, String newInfo, TaskStatus newStatus, Duration newDuration,
+                    LocalDateTime newStartTime) throws IOException;
 
-    void updateEpic(Epic epic);
+    Epic updateEpic(int epicId, String newTitle, String newInfo) throws IOException;
 
-    void updateSubtask(Subtask subtask);
-
-    void updateStatusEpic(ArrayList<Subtask> listSubtaskInEpic, Epic epics);
+    Subtask updateSubtask(int subtaskId, String newTitle, String newInfo, TaskStatus newStatus, Duration newDuration,
+                       LocalDateTime newStartTime) throws IOException;
 
     List<Subtask> allSubtaskInEpic(Integer id);
 
-    List<Task> getHistory();
+    List<Entity> getHistory();
 
+    void addTask(Task task);
+
+    void addSubtask(Subtask subtask);
+
+    void addEpic(Epic epic);
+
+    TreeSet<Task> getPrioritizedTasks();
 }

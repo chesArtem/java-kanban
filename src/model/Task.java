@@ -2,46 +2,38 @@ package model;
 
 import service.Task.TaskStatus;
 
-import java.util.Objects;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
-public class Task {
-    private int id;
-    private String title;
-    private String info;
-    private TaskStatus status;
+public class Task extends Entity implements Comparable<Task> {
+    private final TaskStatus status;
+    private final Duration duration;
+    private final LocalDateTime startTime;
 
-    public Task(int id, String title, String info) {
-        this.id = id;
-        this.title = title;
-        this.info = info;
-        this.status = TaskStatus.NEW;
-    }
-
-    public Task(int id, String title, String info, TaskStatus status) {
-        this.id = id;
-        this.title = title;
-        this.info = info;
+    protected Task(int id, String title, String info, TaskStatus status, Duration duration, LocalDateTime startTime) {
+        super(id, title, info);
         this.status = status;
-    }
-
-    public TaskUpdater getUpdater() {
-        return new TaskUpdater(this);
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getInfo() {
-        return info;
+        this.duration = duration;
+        this.startTime = startTime;
     }
 
     public TaskStatus getStatus() {
         return status;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public LocalDateTime getEndTime() {
+        if (duration == null) {
+            return startTime;
+        }
+        return startTime != null ? startTime.plusMinutes(duration.toMinutes()) : null;
     }
 
     @Override
@@ -49,39 +41,66 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return id == task.id && Objects.equals(title, task.title) && Objects.equals(info, task.info) && status == task.status;
+        return super.equals(o) && status == task.status;
     }
 
-    public static class TaskUpdater {
-        protected final Task originalTask;
-        protected String newTitle;
-        protected String newInfo;
-        protected TaskStatus newStatus;
+    public boolean isIntersectsWith(Task task) {
+        return (task.getStartTime() != null && task.getEndTime() != null && getStartTime() != null &&
+                getEndTime() != null &&
+                ((task.getStartTime().isBefore(getEndTime()) && task.getStartTime().isAfter(getStartTime()))
+                        || (task.getEndTime().isBefore(getEndTime()) && task.getEndTime().isAfter(getStartTime()))
+                        || (task.getStartTime().isBefore(getStartTime()) && task.getEndTime().isAfter(getEndTime()))));
+    }
 
-        public TaskUpdater(Task originalTask) {
-            this.originalTask = originalTask;
-        }
+    public static TaskBuilder builder() {
+        return new TaskBuilder();
+    }
 
-        public TaskUpdater setNewTitle(String newTitle) {
-            this.newTitle = newTitle;
+    @Override
+    public int compareTo(Task o) {
+        return startTime.isBefore(o.getStartTime()) ? -1 : startTime.isAfter(o.getStartTime()) ? 1 : 0;
+    }
+
+    public static class TaskBuilder {
+        protected int id;
+        protected String title;
+        protected String info;
+        protected TaskStatus status = TaskStatus.NEW;
+        protected Duration duration;
+        protected LocalDateTime startTime;
+
+        public TaskBuilder id(int id) {
+            this.id = id;
             return this;
         }
 
-        public TaskUpdater setNewInfo(String newInfo) {
-            this.newInfo = newInfo;
+        public TaskBuilder title(String title) {
+            this.title = title;
             return this;
         }
 
-        public TaskUpdater setNewStatus(TaskStatus newStatus) {
-            this.newStatus = newStatus;
+        public TaskBuilder info(String info) {
+            this.info = info;
             return this;
         }
 
-        public Task updateTask() {
-            return new Task(originalTask.getId(),
-                    newTitle != null ? newTitle : originalTask.getTitle(),
-                    newInfo != null ? newInfo : originalTask.getInfo(),
-                    newStatus != null ? newStatus : originalTask.getStatus());
+        public TaskBuilder status(TaskStatus status) {
+            this.status = status;
+            return this;
+        }
+
+        public TaskBuilder duration(Duration duration) {
+            this.duration = duration;
+            return this;
+        }
+
+        public TaskBuilder startTime(LocalDateTime startTime) {
+            this.startTime = startTime;
+            return this;
+        }
+
+        public Task build() {
+            return new Task(id, title, info, status, duration, startTime);
         }
     }
 }
