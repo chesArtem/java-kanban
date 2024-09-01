@@ -146,7 +146,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public void deleteEpicById(Integer id) throws IOException {
-        super.getEpicById(id);
+        super.deleteEpicById(id);
         save();
     }
 

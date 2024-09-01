@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
@@ -15,6 +16,8 @@ public class InMemoryHistoryManager implements HistoryManager {
     private ListNode<Entity> head;
 
     private ListNode<Entity> tail;
+
+    public static final Logger logger = Logger.getLogger(InMemoryHistoryManager.class.getName());
 
     @Override
     public void add(Entity task) {
@@ -35,7 +38,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     public void remove(int id) {
         ListNode<Entity> oldNode = historyList.get(id);
         if (oldNode == null) {
-            System.out.println("there is no ID-" + id + " element in the history");
+            logger.info("there is no ID-" + id + " element in the history");
         }
         if (oldNode == head) {
             head = head.getNext();
