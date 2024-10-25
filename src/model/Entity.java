@@ -1,6 +1,6 @@
 package model;
 
-import service.Task.TaskStatus;
+import service.task.TaskStatus;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

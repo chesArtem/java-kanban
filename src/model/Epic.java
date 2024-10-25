@@ -1,13 +1,13 @@
 package model;
 
-import service.Task.TaskStatus;
+import service.task.TaskStatus;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
 public class Epic extends Entity {
-    private final Map<Integer, Subtask> mapSubtask;
+    private final transient Map<Integer, Subtask> mapSubtask;
     private TaskStatus status;
     private Duration duration;
     private LocalDateTime startTime;

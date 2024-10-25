@@ -1,10 +1,10 @@
-package service.Task;
+package service.task;
 
 import model.Entity;
 import model.Epic;
 import model.Subtask;
 import model.Task;
-import service.History.HistoryManager;
+import service.history.HistoryManager;
 import service.Managers;
 
 import java.io.IOException;
@@ -13,12 +13,23 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
+    private static InMemoryTaskManager instance;
     protected final Map<Integer, Task> tasks = new HashMap<>();
     protected final Map<Integer, Epic> epics = new HashMap<>();
     protected final Map<Integer, Subtask> subTasks = new HashMap<>();
     private final TreeSet<Task> prioritizedTasks = new TreeSet<>();
-    private final HistoryManager historyManager = Managers.getDefaultHistory();
+    private final HistoryManager historyManager = Managers.getHistoryManager();
     private int id = 1;
+
+    public static InMemoryTaskManager createInstance() {
+        if (instance != null) {
+            throw new IllegalStateException("Instance of InMemoryTaskManager has been created already");
+        }
+        return instance = new InMemoryTaskManager();
+    }
+
+    protected InMemoryTaskManager() {
+    }
 
     @Override
     public int getId() {

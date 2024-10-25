@@ -1,4 +1,4 @@
-package service.Task;
+package service.task;
 
 import model.Entity;
 import model.Epic;
@@ -54,7 +54,7 @@ public interface TaskManager {
     Epic updateEpic(int epicId, String newTitle, String newInfo) throws IOException;
 
     Subtask updateSubtask(int subtaskId, String newTitle, String newInfo, TaskStatus newStatus, Duration newDuration,
-                       LocalDateTime newStartTime) throws IOException;
+                          LocalDateTime newStartTime) throws IOException;
 
     List<Subtask> allSubtaskInEpic(Integer id);
 

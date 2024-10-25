@@ -3,8 +3,8 @@ package util;
 import model.Epic;
 import model.Subtask;
 import model.Task;
-import service.Task.TaskManager;
-import service.Task.TaskStatus;
+import service.task.TaskManager;
+import service.task.TaskStatus;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

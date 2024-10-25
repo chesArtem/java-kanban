@@ -3,8 +3,10 @@ package History;
 import model.Epic;
 import model.Subtask;
 import model.Task;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.Task.InMemoryTaskManager;
+import service.Managers;
+import service.task.InMemoryTaskManager;
 
 import java.io.IOException;
 
@@ -12,7 +14,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
 
-    private InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
+    private InMemoryTaskManager inMemoryTaskManager;
+
+    @BeforeEach
+    public void beforeEach() {
+        Managers.initMemoryTaskManager();
+        inMemoryTaskManager = (InMemoryTaskManager) Managers.getTaskManager();
+    }
+
     @Test
     public void getTaskTest() throws IOException {
         Task task1 = inMemoryTaskManager.createTask("title", "info");

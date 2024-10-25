@@ -1,4 +1,4 @@
-package service.Task;
+package service.task;
 
 import model.Entity;
 import model.Epic;
@@ -12,10 +12,17 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-
+    private static FileBackedTaskManager instance;
     private final File file;
 
-    public FileBackedTaskManager(String path) {
+    public static FileBackedTaskManager createInstance(String path) {
+        if (instance != null) {
+            throw new IllegalStateException("Instance of FileBackedTaskManager has been created already");
+        }
+        return instance = new FileBackedTaskManager(path);
+    }
+
+    private FileBackedTaskManager(String path) {
         super();
         if (path == null || path.isEmpty()) {
             System.out.println("empty path");
@@ -173,7 +180,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public Subtask updateSubtask(int subtaskId, String newTitle, String newInfo, TaskStatus newStatus, Duration newDuration,
-                              LocalDateTime newStartTime) throws IOException {
+                                 LocalDateTime newStartTime) throws IOException {
         Subtask result = super.updateSubtask(subtaskId, newTitle, newInfo, newStatus, newDuration, newStartTime);
         save();
         return result;

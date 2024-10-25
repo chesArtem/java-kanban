@@ -1,7 +1,8 @@
-package service.History;
+package service.history;
 
 import model.Entity;
 import model.ListNode;
+import service.task.InMemoryTaskManager;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,14 +11,21 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 public class InMemoryHistoryManager implements HistoryManager {
-
+    private static InMemoryHistoryManager instance;
     private final Map<Integer, ListNode<Entity>> historyList = new HashMap<>();
-
     private ListNode<Entity> head;
-
     private ListNode<Entity> tail;
-
     public static final Logger logger = Logger.getLogger(InMemoryHistoryManager.class.getName());
+
+    public static InMemoryHistoryManager createInstance() {
+        if (instance != null) {
+            throw new IllegalStateException("Instance of InMemoryTaskManager has been created already");
+        }
+        return instance = new InMemoryHistoryManager();
+    }
+
+    protected InMemoryHistoryManager() {
+    }
 
     @Override
     public void add(Entity task) {

@@ -1,4 +1,4 @@
-package service.History;
+package service.history;
 
 import model.Entity;
 

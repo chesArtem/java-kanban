@@ -1,19 +1,32 @@
 package Task;
 
+import com.sun.net.httpserver.HttpServer;
 import model.Epic;
 import model.Subtask;
 import model.Task;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.Task.InMemoryTaskManager;
-import service.Task.TaskStatus;
+import service.Managers;
+import service.task.InMemoryTaskManager;
+import service.task.TaskStatus;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
 
-    private InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
+    private InMemoryTaskManager inMemoryTaskManager;
+
+    @BeforeEach
+    public void beforeEach() throws IOException {
+        Managers.initMemoryTaskManager();
+        inMemoryTaskManager = (InMemoryTaskManager) Managers.getTaskManager();
+
+        HttpServer.create(new InetSocketAddress(8085), 0).start();
+    }
 
     @Test
     public void getTaskTest() throws IOException {
@@ -96,7 +109,7 @@ class InMemoryTaskManagerTest {
         Epic epic = inMemoryTaskManager.createEpic("title", "info");
         Subtask subtask = inMemoryTaskManager.createSubtask("title", "info", epic);
         Subtask subtask1 = inMemoryTaskManager.getSubtaskById(subtask.getId());
-        subtask1 = inMemoryTaskManager.updateSubtask(subtask1.getId(),  "NewTitle", "NewInfo",
+        subtask1 = inMemoryTaskManager.updateSubtask(subtask1.getId(), "NewTitle", "NewInfo",
                 TaskStatus.IN_PROGRESS, null, null);
         Subtask subtask2 = inMemoryTaskManager.getSubtaskById(subtask1.getId());
         Epic epic2 = inMemoryTaskManager.getEpicById(epic.getId());
