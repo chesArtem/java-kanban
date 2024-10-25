@@ -25,7 +25,7 @@ class InMemoryTaskManagerTest {
         Managers.initMemoryTaskManager();
         inMemoryTaskManager = (InMemoryTaskManager) Managers.getTaskManager();
 
-        HttpServer.create(new InetSocketAddress(8085), 0).start();
+        HttpServer.create(new InetSocketAddress(8080), 0).start();
     }
 
     @Test

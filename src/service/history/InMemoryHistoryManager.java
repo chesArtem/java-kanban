@@ -2,7 +2,6 @@ package service.history;
 
 import model.Entity;
 import model.ListNode;
-import service.task.InMemoryTaskManager;
 
 import java.util.Collections;
 import java.util.HashMap;
