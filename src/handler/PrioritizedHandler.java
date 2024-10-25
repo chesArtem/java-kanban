@@ -2,12 +2,10 @@ package handler;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
-import model.Entity;
 import model.Task;
 import service.Managers;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.TreeSet;
 
 public class PrioritizedHandler extends BaseHttpHandler {
