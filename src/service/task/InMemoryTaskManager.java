@@ -4,7 +4,6 @@ import model.Entity;
 import model.Epic;
 import model.Subtask;
 import model.Task;
-import org.junit.platform.commons.util.StringUtils;
 import service.history.HistoryManager;
 import service.Managers;
 
