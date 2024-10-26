@@ -197,7 +197,7 @@ public class InMemoryTaskManager implements TaskManager {
                 .startTime(newStartTime != null ? newStartTime : existingTask.getStartTime())
                 .duration(newDuration != null ? newDuration : existingTask.getDuration())
                 .build();
-        validateNewTask(newTask);
+        validateUpdateTask(newTask);
         tasks.put(taskId, newTask);
         checkPrioritizedTask(existingTask, true);
         checkPrioritizedTask(newTask, false);
@@ -213,6 +213,7 @@ public class InMemoryTaskManager implements TaskManager {
                 .info(newInfo != null ? newInfo : existingEpic.getInfo())
                 .mapSubtask(existingEpic.getMapSubtask())
                 .build();
+        validateUpdateEpic(newEpic);
         epics.put(epicId, newEpic);
         newEpic.getListSubtask().forEach(it -> it.setParentEpic(newEpic));
         return newEpic;
@@ -231,7 +232,7 @@ public class InMemoryTaskManager implements TaskManager {
                 .startTime(newStartTime != null ? newStartTime : existingSubtask.getStartTime())
                 .duration(newDuration != null ? newDuration : existingSubtask.getDuration())
                 .build();
-        validateNewTask(newSubtask);
+        validateUpdateTask(newSubtask);
         subTasks.put(subtaskId, newSubtask);
         newSubtask.getParentEpic().addSubtask(newSubtask);
         checkPrioritizedTask(existingSubtask, true);
@@ -302,8 +303,30 @@ public class InMemoryTaskManager implements TaskManager {
         if (epic.getStatus() == null) {
             throw new IllegalArgumentException("status should not be empty");
         }
-        if (tasks.containsKey(getId()) || subTasks.containsKey(getId()) || epics.containsKey(getId())) {
+        if (tasks.containsKey(epic.getId()) || subTasks.containsKey(epic.getId()) || epics.containsKey(epic.getId())) {
             throw new IllegalArgumentException("duplicated id");
+        }
+    }
+
+    private void validateUpdateTask(Task task) {
+        if (task.getTitle() == null) {
+            throw new IllegalArgumentException("title should not be empty");
+        }
+        if (task.getStatus() == null) {
+            throw new IllegalArgumentException("status should not be empty");
+        }
+
+        if (prioritizedTasks.stream().anyMatch(task::isIntersectsWith)) {
+            throw new IllegalArgumentException(String.format("Task %s has overlapping duration with one of the tasks", task));
+        }
+    }
+
+    private void validateUpdateEpic(Epic epic) {
+        if (epic.getTitle() == null) {
+            throw new IllegalArgumentException("title should not be empty");
+        }
+        if (epic.getStatus() == null) {
+            throw new IllegalArgumentException("status should not be empty");
         }
     }
 

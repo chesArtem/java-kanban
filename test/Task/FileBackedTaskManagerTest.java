@@ -8,10 +8,9 @@ import org.junit.jupiter.api.Test;
 import service.Managers;
 import service.task.FileBackedTaskManager;
 import service.task.TaskStatus;
+import utils.TestFileUtil;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -61,7 +60,6 @@ public class FileBackedTaskManagerTest {
     @Test
     public void saveTest() throws IOException {
         String path = createFile();
-        Files.delete(Path.of("testSaveTime.txt"));
         Managers.initMemoryHistoryManager();
         Managers.initFileTaskManager("testSaveTime.txt");
         fileBackedTaskManager = (FileBackedTaskManager) Managers.getTaskManager();
@@ -78,6 +76,7 @@ public class FileBackedTaskManagerTest {
 
     @Test
     public void readFileTest() throws IOException {
+        TestFileUtil.resetFile();
         addTask(1, "taskTitle1", "taskInfo1", TaskStatus.NEW, null, null);
         addTask(2, "taskTitle2", "taskInfo2", TaskStatus.NEW, null, null);
         addTask(3, "taskTitle3", "taskInfo3", TaskStatus.NEW, null, null);
@@ -104,5 +103,6 @@ public class FileBackedTaskManagerTest {
     @AfterEach
     public void afterEach() {
         Managers.resetManagers();
+        TestFileUtil.resetFile();
     }
 }
