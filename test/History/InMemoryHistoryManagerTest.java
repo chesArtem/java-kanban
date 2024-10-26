@@ -3,17 +3,29 @@ package History;
 import model.Epic;
 import model.Subtask;
 import model.Task;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.Task.InMemoryTaskManager;
+import service.Managers;
+import service.task.InMemoryTaskManager;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
 
-    private InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
+    private InMemoryTaskManager inMemoryTaskManager;
+
+    @BeforeEach
+    public void beforeEach() {
+        Managers.initMemoryHistoryManager();
+        Managers.initMemoryTaskManager();
+        inMemoryTaskManager = (InMemoryTaskManager) Managers.getTaskManager();
+    }
+
     @Test
-    public void getTaskTest() {
+    public void getTaskTest() throws IOException {
         Task task1 = inMemoryTaskManager.createTask("title", "info");
         Task task2 = inMemoryTaskManager.createTask("title", "info");
         task1 = inMemoryTaskManager.getTaskById(task1.getId());
@@ -29,7 +41,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    public void getEpicTest() {
+    public void getEpicTest() throws IOException {
         Epic task1 = inMemoryTaskManager.createEpic("title", "info");
         Epic task2 = inMemoryTaskManager.createEpic("title", "info");
         task1 = inMemoryTaskManager.getEpicById(task1.getId());
@@ -45,7 +57,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    public void getSubtaskTest() {
+    public void getSubtaskTest() throws IOException {
         Epic task1 = inMemoryTaskManager.createEpic("title", "info");
         Subtask subtask1 = inMemoryTaskManager.createSubtask("title", "info", task1);
         Subtask subtask2 = inMemoryTaskManager.createSubtask("title", "info", task1);
@@ -62,5 +74,34 @@ class InMemoryHistoryManagerTest {
         assertEquals(result.get(0), subtask2);
         assertEquals(result.get(1), subtask1);
         assertEquals(result.get(2), task1);
+    }
+
+    @Test
+    public void getHistoryTest() throws IOException {
+        Epic task1 = inMemoryTaskManager.createEpic("title", "info");
+        var history = inMemoryTaskManager.getHistory();
+        assertEquals(0, history.size());
+        task1 = inMemoryTaskManager.getEpicById(task1.getId());
+        history = inMemoryTaskManager.getHistory();
+        assertEquals(1, history.size());
+        assertEquals(history.get(0), task1);
+        inMemoryTaskManager.deleteEpicById(task1.getId());
+        history = inMemoryTaskManager.getHistory();
+        assertEquals(1, history.size());
+    }
+
+    @Test
+    public void deleteTaskNullTest() throws IOException {
+        assertThrows(IllegalArgumentException.class, () -> inMemoryTaskManager.deleteTaskById(null));
+    }
+
+    @Test
+    public void deeleteTaskTest() throws IOException {
+        inMemoryTaskManager.deleteTaskById(0);
+    }
+
+    @AfterEach
+    public void afterEach() {
+        Managers.resetManagers();
     }
 }

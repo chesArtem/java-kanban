@@ -1,0 +1,7 @@
+id,type,name,status,description,duration,startTime,epic 
+1,TASK,taskTitle1,NEW,taskInfo1,null,null
+2,TASK,taskTitle2,NEW,taskInfo2,null,null
+3,TASK,taskTitle3,NEW,taskInfo3,null,null
+4,EPIC,epicTitle4,null,epicInfo4,null,null
+5,SUBTASK,subtaskTitle5,NEW,subtaskInfo5,null,2024-10-20T22:46:05.417116500,4
+6,SUBTASK,subtaskTitle6,NEW,subtaskInfo6,null,null,4

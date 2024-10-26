@@ -1,20 +1,17 @@
 package model;
 
-import service.Task.TaskStatus;
+import service.task.TaskStatus;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Subtask extends Task {
+    private Epic parentEpic;
 
-    private final Epic parentEpic;
-
-    public Subtask(int id, String title, String info, Epic parentEpic) {
-        super(id, title, info);
-        this.parentEpic = parentEpic;
-    }
-
-    public Subtask(int id, String title, String info, TaskStatus status, Epic parentEpic) {
-        super(id, title, info, status);
+    private Subtask(int id, String title, String info, TaskStatus status, Duration duration, LocalDateTime startTime,
+                    Epic parentEpic) {
+        super(id, title, info, status, duration, startTime);
         this.parentEpic = parentEpic;
     }
 
@@ -22,10 +19,9 @@ public class Subtask extends Task {
         return parentEpic;
     }
 
-    public SubtaskUpdater getUpdater() {
-        return new SubtaskUpdater(this);
+    public void setParentEpic(Epic parentEpic) {
+        this.parentEpic = parentEpic;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -36,19 +32,20 @@ public class Subtask extends Task {
         return Objects.equals(parentEpic, subtask.parentEpic);
     }
 
-    public static class SubtaskUpdater extends TaskUpdater {
-        public SubtaskUpdater(Subtask originalTask) {
-            super(originalTask);
+    public static SubtaskBuilder builder() {
+        return new SubtaskBuilder();
+    }
+
+    public static class SubtaskBuilder extends TaskBuilder {
+        private Epic parentEpic;
+
+        public SubtaskBuilder parentEpic(Epic parentEpic) {
+            this.parentEpic = parentEpic;
+            return this;
         }
 
-        public Subtask updateTask() {
-            Epic parentEpic = ((Subtask)originalTask).getParentEpic();
-            parentEpic.removeSubtask((Subtask) originalTask);
-            return new Subtask(originalTask.getId(),
-                    newTitle != null ? newTitle : originalTask.getTitle(),
-                    newInfo != null ? newInfo : originalTask.getInfo(),
-                    newStatus != null ? newStatus : originalTask.getStatus(),
-                    parentEpic);
+        public Subtask build() {
+            return new Subtask(id, title, info, status, duration, startTime, parentEpic);
         }
     }
 }
