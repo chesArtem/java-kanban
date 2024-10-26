@@ -14,7 +14,7 @@ public class Managers {
         if (activeTaskManager != null) {
             throw new IllegalStateException("Task manager already created");
         }
-        activeTaskManager =  new FileBackedTaskManager(path);
+        activeTaskManager = new FileBackedTaskManager(path);
     }
 
     public static void initMemoryTaskManager() {
@@ -33,14 +33,14 @@ public class Managers {
 
     public static TaskManager getTaskManager() {
         if (activeTaskManager == null) {
-            throw new IllegalStateException("");
+            throw new IllegalStateException("Task manager has not been initialized");
         }
         return activeTaskManager;
     }
 
     public static HistoryManager getHistoryManager() {
         if (activeHistoryManager == null) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("History manager has not been initialized");
         }
         return activeHistoryManager;
     }

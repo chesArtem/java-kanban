@@ -16,6 +16,7 @@ public class Epic extends Entity {
     private Epic(int id, String title, String info, Map<Integer, Subtask> mapSubtask) {
         super(id, title, info);
         this.mapSubtask = mapSubtask;
+        recalculateStatus();
         recalculateFields();
     }
 
@@ -41,16 +42,19 @@ public class Epic extends Entity {
 
     public void addSubtask(Subtask subtask) {
         mapSubtask.put(subtask.getId(), subtask);
+        recalculateStatus();
         recalculateFields();
     }
 
     public void removeSubtask(Subtask subtask) {
         mapSubtask.remove(subtask.getId());
+        recalculateStatus();
         recalculateFields();
     }
 
     public void removeAllSubtasks() {
         mapSubtask.clear();
+        recalculateStatus();
         recalculateFields();
     }
 
@@ -62,7 +66,7 @@ public class Epic extends Entity {
         return mapSubtask;
     }
 
-    public void recalculateFields() {
+    public void recalculateStatus() {
         if (mapSubtask.values().stream().allMatch(item -> item.getStatus().equals(TaskStatus.NEW))) {
             status = TaskStatus.NEW;
         } else if (mapSubtask.values().stream().allMatch(item -> item.getStatus().equals(TaskStatus.DONE))) {
@@ -70,7 +74,9 @@ public class Epic extends Entity {
         } else {
             status = TaskStatus.IN_PROGRESS;
         }
+    }
 
+    public void recalculateFields() {
         startTime = mapSubtask.values().stream()
                 .map(Task::getStartTime)
                 .filter(Objects::nonNull)

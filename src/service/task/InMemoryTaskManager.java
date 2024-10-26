@@ -4,6 +4,7 @@ import model.Entity;
 import model.Epic;
 import model.Subtask;
 import model.Task;
+import org.junit.platform.commons.util.StringUtils;
 import service.history.HistoryManager;
 import service.Managers;
 
@@ -56,6 +57,7 @@ public class InMemoryTaskManager implements TaskManager {
                 .title(title)
                 .info(info)
                 .build();
+        validateNewEpic(result);
         epics.put(id++, result);
         return result;
     }
@@ -87,6 +89,9 @@ public class InMemoryTaskManager implements TaskManager {
         if (id == null) {
             throw new IllegalArgumentException("Task id can't be null");
         }
+        if (tasks.get(id) == null) {
+            throw new NullPointerException("task not found");
+        }
         Task result = tasks.get(id);
         historyManager.add(result);
         return result;
@@ -97,6 +102,9 @@ public class InMemoryTaskManager implements TaskManager {
         if (id == null) {
             throw new IllegalArgumentException("Epic id can't be null");
         }
+        if (epics.get(id) == null) {
+            throw new NullPointerException("epic not found");
+        }
         Epic result = epics.get(id);
         historyManager.add(result);
         return result;
@@ -106,6 +114,9 @@ public class InMemoryTaskManager implements TaskManager {
     public Subtask getSubtaskById(Integer id) {
         if (id == null) {
             throw new IllegalArgumentException("Subtask id can't be null");
+        }
+        if (subTasks.get(id) == null) {
+            throw new NullPointerException("subtask not found");
         }
         Subtask result = subTasks.get(id);
         historyManager.add(result);
@@ -241,18 +252,21 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addTask(Task task) {
+        validateNewTask(task);
         tasks.put(task.getId(), task);
         checkPrioritizedTask(task, false);
     }
 
     @Override
     public void addSubtask(Subtask subtask) {
+        validateNewTask(subtask);
         subTasks.put(subtask.getId(), subtask);
         checkPrioritizedTask(subtask, false);
     }
 
     @Override
     public void addEpic(Epic epic) {
+        validateNewEpic(epic);
         epics.put(epic.getId(), epic);
     }
 
@@ -267,8 +281,30 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void validateNewTask(Task task) {
+        if (task.getTitle() == null) {
+            throw new IllegalArgumentException("title should not be empty");
+        }
+        if (task.getStatus() == null) {
+            throw new IllegalArgumentException("status should not be empty");
+        }
+        if (tasks.containsKey(task.getId()) || subTasks.containsKey(task.getId()) || epics.containsKey(task.getId())) {
+            throw new IllegalArgumentException("duplicated id");
+        }
+
         if (prioritizedTasks.stream().anyMatch(task::isIntersectsWith)) {
-            throw new IllegalStateException(String.format("Task %s has overlapping duration with one of the tasks", task));
+            throw new IllegalArgumentException(String.format("Task %s has overlapping duration with one of the tasks", task));
+        }
+    }
+
+    private void validateNewEpic(Epic epic) {
+        if (epic.getTitle() == null) {
+            throw new IllegalArgumentException("title should not be empty");
+        }
+        if (epic.getStatus() == null) {
+            throw new IllegalArgumentException("status should not be empty");
+        }
+        if (tasks.containsKey(getId()) || subTasks.containsKey(getId()) || epics.containsKey(getId())) {
+            throw new IllegalArgumentException("duplicated id");
         }
     }
 
