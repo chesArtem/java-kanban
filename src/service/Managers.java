@@ -14,21 +14,21 @@ public class Managers {
         if (activeTaskManager != null) {
             throw new IllegalStateException("Task manager already created");
         }
-        activeTaskManager = FileBackedTaskManager.createInstance(path);
+        activeTaskManager =  new FileBackedTaskManager(path);
     }
 
     public static void initMemoryTaskManager() {
         if (activeTaskManager != null) {
             throw new IllegalStateException("Task manager already created");
         }
-        activeTaskManager = InMemoryTaskManager.createInstance();
+        activeTaskManager = new InMemoryTaskManager();
     }
 
     public static void initMemoryHistoryManager() {
         if (activeHistoryManager != null) {
             throw new IllegalStateException("History manager already created");
         }
-        activeHistoryManager = InMemoryHistoryManager.createInstance();
+        activeHistoryManager = new InMemoryHistoryManager();
     }
 
     public static TaskManager getTaskManager() {
@@ -43,5 +43,10 @@ public class Managers {
             throw new IllegalStateException();
         }
         return activeHistoryManager;
+    }
+
+    public static void resetManagers() {
+        activeTaskManager = null;
+        activeHistoryManager = null;
     }
 }

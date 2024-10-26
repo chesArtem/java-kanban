@@ -3,6 +3,7 @@ package Task;
 import model.Epic;
 import model.Subtask;
 import model.Task;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import service.Managers;
 import service.task.FileBackedTaskManager;
@@ -55,5 +56,10 @@ public class FileBackedTaskManagerTest {
         assertEquals(epic.getId(), subtask.getParentEpic().getId());
         assertEquals(2, epic.getListSubtask().size());
         assertTrue(epic.getListSubtask().stream().map(Subtask::getId).collect(Collectors.toList()).contains(subtask.getId()));
+    }
+
+    @AfterEach
+    public void afterEach() {
+        Managers.resetManagers();
     }
 }

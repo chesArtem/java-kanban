@@ -16,14 +16,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     private ListNode<Entity> tail;
     public static final Logger logger = Logger.getLogger(InMemoryHistoryManager.class.getName());
 
-    public static InMemoryHistoryManager createInstance() {
-        if (instance != null) {
-            throw new IllegalStateException("Instance of InMemoryTaskManager has been created already");
-        }
-        return instance = new InMemoryHistoryManager();
-    }
-
-    protected InMemoryHistoryManager() {
+    public InMemoryHistoryManager() {
     }
 
     @Override

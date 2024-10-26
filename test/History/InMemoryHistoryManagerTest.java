@@ -3,6 +3,7 @@ package History;
 import model.Epic;
 import model.Subtask;
 import model.Task;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.Managers;
@@ -18,6 +19,7 @@ class InMemoryHistoryManagerTest {
 
     @BeforeEach
     public void beforeEach() {
+        Managers.initMemoryHistoryManager();
         Managers.initMemoryTaskManager();
         inMemoryTaskManager = (InMemoryTaskManager) Managers.getTaskManager();
     }
@@ -96,5 +98,10 @@ class InMemoryHistoryManagerTest {
     @Test
     public void deeleteTaskTest() throws IOException {
         inMemoryTaskManager.deleteTaskById(0);
+    }
+
+    @AfterEach
+    public void afterEach() {
+        Managers.resetManagers();
     }
 }

@@ -21,14 +21,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final HistoryManager historyManager = Managers.getHistoryManager();
     private int id = 1;
 
-    public static InMemoryTaskManager createInstance() {
-        if (instance != null) {
-            throw new IllegalStateException("Instance of InMemoryTaskManager has been created already");
-        }
-        return instance = new InMemoryTaskManager();
-    }
-
-    protected InMemoryTaskManager() {
+    public InMemoryTaskManager() {
     }
 
     @Override
@@ -278,6 +271,7 @@ public class InMemoryTaskManager implements TaskManager {
             throw new IllegalStateException(String.format("Task %s has overlapping duration with one of the tasks", task));
         }
     }
+
 
     @Override
     public TreeSet<Task> getPrioritizedTasks() {

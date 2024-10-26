@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpServer;
 import model.Epic;
 import model.Subtask;
 import model.Task;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.Managers;
@@ -17,14 +18,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
 
-    private InMemoryTaskManager inMemoryTaskManager;
+    private static InMemoryTaskManager inMemoryTaskManager;
 
-    @BeforeEach
-    public void beforeEach() throws IOException {
+    @BeforeAll
+    public static void beforeAll() {
+        Managers.initMemoryHistoryManager();
         Managers.initMemoryTaskManager();
         inMemoryTaskManager = (InMemoryTaskManager) Managers.getTaskManager();
-
-        HttpServer.create(new InetSocketAddress(8080), 0).start();
     }
 
     @Test

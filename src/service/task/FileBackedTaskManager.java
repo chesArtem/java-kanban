@@ -15,14 +15,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private static FileBackedTaskManager instance;
     private final File file;
 
-    public static FileBackedTaskManager createInstance(String path) {
-        if (instance != null) {
-            throw new IllegalStateException("Instance of FileBackedTaskManager has been created already");
-        }
-        return instance = new FileBackedTaskManager(path);
-    }
-
-    private FileBackedTaskManager(String path) {
+    public FileBackedTaskManager(String path) {
         super();
         if (path == null || path.isEmpty()) {
             System.out.println("empty path");
